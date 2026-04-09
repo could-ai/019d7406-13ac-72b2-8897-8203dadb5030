@@ -7,7 +7,7 @@ class PredictionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ML Framework Predictions'),
+        title: const Text('Early-Warning System'),
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       ),
       body: SingleChildScrollView(
@@ -24,18 +24,20 @@ class PredictionScreen extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.model_training, color: Theme.of(context).colorScheme.primary),
+                        Icon(Icons.memory, color: Theme.of(context).colorScheme.primary),
                         const SizedBox(width: 8),
-                        const Text(
-                          'Integrated Mathematical Model',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        const Expanded(
+                          child: Text(
+                            'LSTM & Ensemble Models',
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 8),
                     const Text(
-                      'Our hybrid machine learning framework analyzes current meteorological data to predict air quality trends for the next 7 days.',
-                      style: TextStyle(color: Colors.black87),
+                      'Our framework utilizes Recurrent Deep Learning (LSTM), Random Forest, and Gradient Boosting to capture temporal dynamics and nonlinear dependencies for high-fidelity short-term forecasting.',
+                      style: TextStyle(color: Colors.black87, fontSize: 13),
                     ),
                   ],
                 ),
@@ -43,57 +45,97 @@ class PredictionScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             const Text(
-              '7-Day AQI Forecast',
+              'PM2.5 Short-Term Forecast',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             SizedBox(
-              height: 250,
+              height: 200,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  _buildBar('Mon', 42, Colors.green),
-                  _buildBar('Tue', 45, Colors.green),
-                  _buildBar('Wed', 55, Colors.yellow.shade700),
-                  _buildBar('Thu', 68, Colors.yellow.shade700),
-                  _buildBar('Fri', 85, Colors.orange),
-                  _buildBar('Sat', 60, Colors.yellow.shade700),
-                  _buildBar('Sun', 48, Colors.green),
+                  _buildBar('Now', 45, Colors.green),
+                  _buildBar('+6h', 52, Colors.yellow.shade700),
+                  _buildBar('+12h', 68, Colors.yellow.shade700),
+                  _buildBar('+18h', 85, Colors.orange),
+                  _buildBar('+24h', 110, Colors.orange.shade800),
+                  _buildBar('+36h', 75, Colors.yellow.shade700),
+                  _buildBar('+48h', 50, Colors.green),
                 ],
               ),
             ),
             const SizedBox(height: 32),
+            
             const Text(
-              'Key Predictive Factors',
+              'Sensitivity Analysis (Main Factors)',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Factors most influencing pollutant variability:',
+              style: TextStyle(fontSize: 13, color: Colors.grey),
+            ),
+            const SizedBox(height: 16),
+            _buildFactorTile('Temperature', 'High Impact', 0.88, Colors.red),
+            _buildFactorTile('Humidity', 'High Impact', 0.82, Colors.orange),
+            _buildFactorTile('Wind Speed', 'High Impact', 0.75, Colors.blue),
+            
+            const SizedBox(height: 32),
+            const Text(
+              'Model Performance Metrics',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            _buildFactorTile('Wind Direction Shift', 'High Impact', 0.85, Colors.red),
-            _buildFactorTile('Temperature Inversion', 'Moderate Impact', 0.60, Colors.orange),
-            _buildFactorTile('Precipitation Probability', 'Low Impact', 0.30, Colors.green),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildMetricCard(context, 'RMSE', '12.4'),
+                _buildMetricCard(context, 'MAE', '8.7'),
+                _buildMetricCard(context, 'R²', '0.92'),
+              ],
+            ),
+            const SizedBox(height: 24),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildBar(String day, double value, Color color) {
+  Widget _buildMetricCard(BuildContext context, String label, String value) {
+    return Container(
+      width: 100,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        children: [
+          Text(label, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
+          const SizedBox(height: 8),
+          Text(value, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBar(String time, double value, Color color) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Text(value.toInt().toString(), style: const TextStyle(fontWeight: FontWeight.bold)),
+        Text(value.toInt().toString(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
         const SizedBox(height: 8),
         Container(
-          width: 30,
-          height: value * 2, // Scale factor for visual representation
+          width: 35,
+          height: value * 1.2, // Scale factor
           decoration: BoxDecoration(
             color: color,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
           ),
         ),
         const SizedBox(height: 8),
-        Text(day, style: const TextStyle(fontSize: 12)),
+        Text(time, style: const TextStyle(fontSize: 12)),
       ],
     );
   }
